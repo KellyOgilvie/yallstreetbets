@@ -1,9 +1,22 @@
+import sys
 import yfinance as yf
 import plotly.express as px
 import plotly.graph_objs as go
 
-ticker = 'AAPL'
-years_back = '5y'
+# Set default values
+default_ticker = 'AAPL'
+default_period = '5y'
+
+# Read command line arguments and assign defaults if not provided
+if len(sys.argv) > 1:
+    ticker = sys.argv[1]
+else:
+    ticker = default_ticker
+
+if len(sys.argv) > 2:
+    years_back = sys.argv[2]
+else:
+    years_back = default_period
 
 # Fetch historical data for the given ticker for the specified period
 stock_data = yf.download(ticker, period=years_back)
