@@ -1,66 +1,55 @@
 import sys
 import yfinance as yf
-import plotly.express as px
 import plotly.graph_objs as go
+import pandas as pd
 
-# Set default values
-default_ticker = 'AAPL'
-default_period = '5y'
-default_frequency = 'monthly'  # Or 'weekly'
+# Define industry tickers
+industry_tickers = ['BA', 'AAL', 'UAL']  # Example for tech industry
+default_period = '3y'
 
 # Read command line arguments and assign defaults if not provided
-if len(sys.argv) > 1:
-    ticker = sys.argv[1]
-else:
-    ticker = default_ticker
+years_back = sys.argv[1] if len(sys.argv) > 1 else default_period
 
-if len(sys.argv) > 2:
-    years_back = sys.argv[2]
-else:
-    years_back = default_period
+# Create an empty figure for the plots
+fig = go.Figure()
 
-if len(sys.argv) > 3:
-    frequency = sys.argv[3]
-else:
-    frequency = default_frequency
+# Dataframe to store all normalized closes for trend line calculation
+all_normalized_closes = pd.DataFrame()
 
-# Fetch historical data for the given ticker for the specified period
-stock_data = yf.download(ticker, period=years_back)
+# Fetch and process historical data for each ticker in the industry
+for ticker in industry_tickers:
+    stock_data = yf.download(ticker, period=years_back)
+    stock_data['Year'] = stock_data.index.year
+    stock_data['Month'] = stock_data.index.month
 
-# Extract year and month from the index
-stock_data['Year'] = stock_data.index.year
-stock_data['Month'] = stock_data.index.month
-stock_data['Week'] = stock_data.index.isocalendar().week
+    # Group data and calculate mean close prices
+    grouped_data = stock_data.groupby(['Year', 'Month']).agg({'Close': 'mean'}).reset_index()
 
-# Group the data by Year and Month or Week, then calculate average close price
-if frequency == 'monthly':
-    group_data = stock_data.groupby(['Year', 'Month']).agg({'Close': 'mean'}).reset_index()
-    time_unit = 'Month'
-elif frequency == 'weekly':
-    group_data = stock_data.groupby(['Year', 'Week']).agg({'Close': 'mean'}).reset_index()
-    time_unit = 'Week'
+    # Calculate the yearly average close price
+    yearly_avg = grouped_data.groupby('Year')['Close'].transform('mean')
 
-# Calculate the yearly average close price
-yearly_avg = group_data.groupby('Year')['Close'].transform('mean')
+    # Calculate percentage from the yearly average and normalize
+    grouped_data['Normalized Close'] = (grouped_data['Close'] - yearly_avg) / yearly_avg * 100
+    all_normalized_closes = pd.concat([all_normalized_closes, grouped_data[['Normalized Close', 'Month']]], axis=0)
 
-# Calculate percentage from the yearly average and normalize
-group_data['Normalized Close'] = (group_data['Close'] - yearly_avg) / yearly_avg * 100
+    # Pivot data for plotting
+    pivot_data = grouped_data.pivot(index='Month', columns='Year', values='Normalized Close')
 
-# Pivot the data for plotting
-pivot_data = group_data.pivot(index=time_unit, columns='Year', values='Normalized Close')
+    # Add a trace for each year for this ticker
+    for year in pivot_data.columns:
+        fig.add_trace(go.Scatter(x=pivot_data.index, y=pivot_data[year], mode='lines', name=f'{ticker} {year}', line=dict(color='black')))
 
-# Create a line plot using Plotly
-fig = px.line(pivot_data, x=pivot_data.index, y=pivot_data.columns,
-              labels={'value': 'Percent from Yearly Average', 'index': time_unit},
-              title=f'Normalized Seasonal Trends in {ticker} Stock Prices ({frequency.capitalize()})')
+# Calculate and plot the average trendline across all normalized closes
+avg_trendline = all_normalized_closes.groupby('Month')['Normalized Close'].mean()
+fig.add_trace(go.Scatter(x=avg_trendline.index, y=avg_trendline, mode='lines', name='Average Trend', line=dict(color='red', width=3)))
 
-# Calculate the average across all years for each month or week
-average_trend = pivot_data.mean(axis=1)
+# Update layout and axes properties
+fig.update_layout(title='Normalized Seasonal Trends in Industry Stock Prices (Monthly)',
+                  xaxis_title='Month',
+                  yaxis_title='Percent from Yearly Average',
+                  legend_title="Ticker and Year")
 
-# Add the average trendline
-fig.add_trace(go.Scatter(x=pivot_data.index, y=average_trend, mode='lines',
-                         line=dict(color='black', width=3),
-                         name='Average Trend'))
+fig.update_xaxes(dtick="M1", tickformat="%b")
 
-fig.update_xaxes(dtick="M1" if frequency == 'monthly' else "W1", tickformat="%b" if frequency == 'monthly' else None)
+# Show the plot
 fig.show()
