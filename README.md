@@ -8,8 +8,9 @@ This repository contains multiple scripts designed to analyze and visualize stoc
 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [Script Descriptions](#script-descriptions)
+- [Standalone Scripts](#standalone-scripts)
   - [Seasonal trend charting](#seasonal-trend-charting)
+- [Interface](#interface)
 - [Contributing](#contributing)
 - [Contact](#contact)
 - [License and Disclaimer](#license-and-disclaimer)
@@ -25,14 +26,14 @@ Before you begin, ensure you have the following installed:
 
 Clone this repository to your local machine using:
 ```bash
-git clone https://github.com/yourusername/yourrepositoryname.git
+git clone https://github.com/KellyOgilvie/yallstreetbets
 ```
 Navigate to the repository directory and install required Python libraries:
 ```bash
 pip install -r requirements.txt
 ```
 
-## Script Descriptions
+## Standalone scripts
 
 ### Seasonal trend charting
 
@@ -47,6 +48,22 @@ python script.py AAPL 5y monthly
 ```bash
 python script.py AAPL 5y weekly
 ```
+
+## Interface
+### Overview
+The Stock Analysis Interface is a web application built with Dash and Python, designed to provide users with financial analysis of stocks. The application allows users to input a stock ticker symbol, upon which it displays various financial metrics such as Beta, Expected Return, Book Value Per Share, and a trailing stop loss price calculated using the Average True Range (ATR).
+
+### Features
+- Stock Ticker Input: Enter any stock ticker to retrieve financial data and analysis.
+- Real-time Analysis: Get up-to-date financial analysis including Beta, Expected Return, and Book Value Per Share based on the most recent data from Yahoo finance.
+- Trailing Stop-Loss Target: Automatically calculates the best trailing stop loss price using ATR. The ATR provides a measure of an asset's volatility over a specified period, allowing traders to set stop losses based on actual market conditions rather than arbitrary fixed distances. This makes the ATR-based trailing stop loss particularly useful in volatile markets where price swings are significant.
+
+ATR-Based Trailing Stop Loss Method:
+
+Setting the Stop Loss: Determine a multiplier, commonly 1.5 to 3 times the ATR, depending on the desired tightness of the stop. The trailing stop loss is then set a fixed distance from the high price (for long positions) or low price (for short positions) based on this calculation.
+Example: If the ATR is $5 and you choose a multiplier of 2 for a long position, your trailing stop loss will be set $10 below the highest price reached since entering the trade.
+This method dynamically adjusts to reflect the asset’s typical price movements, providing a balanced approach that aims to minimize premature exits during normal market fluctuations while protecting profits from significant reversals. The ATR-based trailing stop loss is a popular choice among traders who wish to tailor their risk management strategies to better align with the volatility and price dynamics of the assets they are trading.
+
 
 ## Contributing
 

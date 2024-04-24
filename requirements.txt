@@ -1,2 +1,6 @@
 yfinance
 plotly
+dash
+pandas
+dash-bootstrap-components
+yahoo_fin
