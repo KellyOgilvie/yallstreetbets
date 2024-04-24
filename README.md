@@ -90,9 +90,10 @@ The creator of this project is not a financial advisor. By using this applicatio
 All notable changes to this project will be documented in this section. The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Unreleased
+- Incorporate seasonality_charting.py into the Dash app
 - Account for leap years in seasonality_charting.py
 - Add industry analysis to seasonality_charting.py
-- Allow user to switch between weekly and monthly via Plotly chart for seasonality_charting.py (requires creating a Dash app)
+- Allow user to switch between weekly and monthly via Plotly chart for seasonality_charting.py 
 - Cyclical trend analysis
 - Volatility clustering detection
 - Intermarket analysis tool
@@ -103,15 +104,22 @@ All notable changes to this project will be documented in this section. The form
 - Liquidity assessment tool
 - Economic indicators
 
-### Version 1.0.0 - 2024-04-16
+### Version 1.2.0 - 2024-04-23
 
 #### Added
-- `seasonality_charting.py`: Introduced a new script for analyzing and visualizing seasonal trends in stock prices.
+- Added a new Dash app for basic stock analysis
+- Added a new function for calculating the best trailing stop loss price based on the last 14 days of volatility for that stock
 
 ### Version 1.1.0 - 2024-04-16
 
 #### Added
 - Added weekly analysis to seasonality_charting.py
 - Accepts ticker and period as inputs when running the script in terminal for seasonality_charting.py
+
+### Version 1.0.0 - 2024-04-16
+
+#### Added
+- `seasonality_charting.py`: Introduced a new script for analyzing and visualizing seasonal trends in stock prices.
+
 
 
