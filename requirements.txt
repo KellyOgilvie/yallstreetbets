@@ -4,3 +4,4 @@ dash
 pandas
 dash-bootstrap-components
 yahoo_fin
+numpy
