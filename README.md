@@ -32,6 +32,11 @@ Navigate to the repository directory and install required Python libraries:
 ```bash
 pip install -r requirements.txt
 ```
+To run the application, execute the following command from the root directory of your project:
+```bash
+python ysb_ui.py
+```
+After running the command, open your web browser and visit `http://localhost:8050` to view the app.
 
 ## Standalone scripts
 
@@ -43,10 +48,10 @@ pip install -r requirements.txt
 
 **Example Commands:**
 ```bash
-python script.py AAPL 5y monthly
+python seasonality_charting.py AAPL 5y monthly
 ```
 ```bash
-python script.py AAPL 5y weekly
+python seasonality_charting.py AAPL 5y weekly
 ```
 
 ## Interface
